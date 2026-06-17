@@ -1,0 +1,23 @@
+2026-06-17 16:10:28,144 - INFO - main - Starting EmergencyIQ API — testing database connectivity...
+2026-06-17 16:10:28,144 - ERROR - main - Database connectivity failed on startup: name 'async_engine' is not defined
+Traceback (most recent call last):
+  File "D:\EmergecyAI\backend\app\main.py", line 37, in startup_event
+    async with async_engine.connect() as conn:
+               ^^^^^^^^^^^^
+NameError: name 'async_engine' is not defined
+2026-06-17 16:10:58,286 - INFO - main - Starting EmergencyIQ API — testing database connectivity...
+2026-06-17 16:10:58,831 - ERROR - main - Database connectivity failed on startup: 'Connection' object does not support the asynchronous context manager protocol
+Traceback (most recent call last):
+  File "D:\EmergecyAI\backend\app\main.py", line 37, in startup_event
+    async with engine.connect() as conn:
+TypeError: 'Connection' object does not support the asynchronous context manager protocol
+2026-06-17 16:13:00,779 - INFO - main - Starting EmergencyIQ API...
+2026-06-17 16:13:00,848 - INFO - main - Database connected successfully
+2026-06-17 16:13:02,009 - INFO - main - Starting EmergencyIQ API...
+2026-06-17 16:13:02,143 - INFO - main - Database connected successfully
+2026-06-17 16:21:57,070 - INFO - main - Starting EmergencyIQ API...
+2026-06-17 16:21:57,142 - INFO - main - Database connected successfully
+2026-06-17 16:24:59,325 - INFO - main - Starting EmergencyIQ API...
+2026-06-17 16:24:59,331 - INFO - main - Database connected successfully
+2026-06-17 16:28:49,078 - INFO - main - Starting EmergencyIQ API...
+2026-06-17 16:28:49,086 - INFO - main - Database connected successfully
