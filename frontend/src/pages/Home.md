@@ -1,1 +1,0 @@
-This folder contains pages for the frontend. Home, About, NotFound implemented as skeletons.

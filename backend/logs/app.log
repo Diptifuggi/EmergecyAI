@@ -21,3 +21,14 @@ TypeError: 'Connection' object does not support the asynchronous context manager
 2026-06-17 16:24:59,331 - INFO - main - Database connected successfully
 2026-06-17 16:28:49,078 - INFO - main - Starting EmergencyIQ API...
 2026-06-17 16:28:49,086 - INFO - main - Database connected successfully
+2026-06-23 09:29:12,383 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-23 09:29:12,578 | INFO | app.main | Database connected successfully
+2026-06-23 09:29:12,581 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-23 09:29:12,583 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-23 09:29:12,583 | INFO | app.main | Boot time: 0.200s
+2026-06-23 13:48:46,290 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-23 13:48:50,091 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-23 13:48:50,259 | INFO | app.main | Database connected successfully
+2026-06-23 13:48:50,259 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-23 13:48:50,259 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-23 13:48:50,262 | INFO | app.main | Boot time: 0.171s

@@ -23,18 +23,26 @@
 #         return {"status": "ok", "db": "connected"}
 #     except Exception:
 #         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"error": True, "message": "Database not reachable"})
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, status
+from fastapi.responses import JSONResponse
 from sqlalchemy import text
-from app.core.database import SessionLocal
+
+from app.core.database import get_db
+from app.core.config import settings
 
 router = APIRouter()
 
-@router.get("/health/db")
-def health_db():
-    db = SessionLocal()
 
+@router.get("/health", status_code=status.HTTP_200_OK)
+async def health():
+    return {"status": "ok", "app": settings.APP_NAME, "environment": settings.ENVIRONMENT}
+
+
+@router.get("/health/db", status_code=status.HTTP_200_OK)
+async def health_db(db=Depends(get_db)):
     try:
-        db.execute(text("SELECT 1"))
-        return {"status": "Database Connected"}
-    finally:
-        db.close()
+        result = await db.execute(text("SELECT 1"))
+        _ = result.scalar()
+        return {"status": "ok", "db": "connected"}
+    except Exception:
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"error": True, "message": "Database not reachable"})

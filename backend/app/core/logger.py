@@ -14,10 +14,9 @@ def get_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
     if logger.handlers:
         return logger
-
     logger.setLevel(logging.INFO)
 
-    fmt = logging.Formatter("%(asctime)s - %(levelname)s - %(module)s - %(message)s")
+    fmt = logging.Formatter("%(asctime)s | %(levelname)s | %(name)s | %(message)s")
 
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
