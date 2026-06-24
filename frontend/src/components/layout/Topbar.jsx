@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Bell, Search, User } from 'lucide-react'
+import { Bell, Search, User, CheckCircle, Menu } from 'lucide-react'
+import { Button } from '@/components/ui'
 import { useQuery } from '@tanstack/react-query'
 import { listCalls } from '@/api/callsApi'
+import { getPriorityConfig } from '@/lib/priorityUtils'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 
@@ -36,7 +38,7 @@ export default function Topbar(){
 
   const title = PATH_TITLES[location.pathname] || 'Emergency Operations'
 
-  const { data: critical } = useQuery({ queryKey: ['calls','critical'], queryFn: () => listCalls({ priority: 'Critical', limit: 5 }), refetchInterval: 15000, retry: false })
+  const { data: critical } = useQuery({ queryKey: ['calls','critical'], queryFn: () => listCalls({ priority: 'Critical', page_size: 5 }), refetchInterval: 15000, retry: false })
   const criticalCount = critical?.length || 0
 
   function handleViewCall(id){ navigate(`/calls/${id}`); setSheetOpen(false) }
@@ -44,6 +46,7 @@ export default function Topbar(){
   return (
     <header className="h-14 bg-white border-b border-gray-200 flex items-center px-4">
       <div className="flex items-center w-1/3">
+        <button className="p-2 mr-2 md:hidden" onClick={() => window.dispatchEvent(new CustomEvent('toggleMobileSidebar'))} aria-label="Open menu"><Menu className="w-5 h-5" /></button>
         <div className="text-sm font-medium">{title}</div>
       </div>
 
@@ -52,6 +55,9 @@ export default function Topbar(){
       </div>
 
       <div className="w-1/3 flex items-center justify-end gap-4">
+        <div className="mr-2">
+          <Button onClick={() => window.dispatchEvent(new CustomEvent('openNewCallDialog'))} className="bg-black text-white">New Call</Button>
+        </div>
         <div className="relative">
           <button onClick={()=> setSheetOpen(s => !s)} className="relative p-2 rounded hover:bg-gray-50">
             <Bell className="w-5 h-5" />
@@ -61,28 +67,38 @@ export default function Topbar(){
           </button>
 
           {sheetOpen && (
-            <div className="fixed right-4 top-16 w-96 bg-white border shadow-lg z-50">
-              <div className="p-4 border-b flex items-center justify-between">
-                <div className="font-semibold">Critical Alerts</div>
-                <button onClick={()=>setSheetOpen(false)} className="text-sm text-gray-500">Close</button>
-              </div>
-              <div className="p-3">
-                {(!critical || critical.length === 0) ? <div className="text-sm text-gray-500">No critical alerts</div> : (
-                  <ul className="space-y-3">
-                    {critical.slice(0,5).map(c => (
-                      <li key={c.id} className="flex items-center justify-between">
-                        <div>
-                          <div className="font-medium">{c.caller_name || c.caller || 'Unknown'}</div>
-                          <div className="text-xs text-gray-500">Score: {c.score ?? '—'}</div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="px-2 py-0.5 text-xs bg-red-50 text-red-700 rounded">{c.priority || 'Critical'}</div>
-                          <button onClick={()=>handleViewCall(c.id)} className="text-sm text-blue-600">View</button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+            <div className="fixed right-4 top-16 z-50">
+              <div className="w-[380px] bg-white border shadow-lg">
+                <div className="p-4 border-b flex items-center justify-between">
+                  <div className="font-semibold">Critical Alerts</div>
+                  <button onClick={()=>setSheetOpen(false)} className="text-sm text-gray-500">Close</button>
+                </div>
+                <div className="p-3">
+                  {(!critical || critical.length === 0) ? (
+                    <div className="flex flex-col items-center justify-center py-8">
+                      <div className="text-green-600 mb-3"><CheckCircle className="w-8 h-8" /></div>
+                      <div className="font-medium">No active critical calls</div>
+                    </div>
+                  ) : (
+                    <ul className="space-y-3">
+                      {critical.slice(0,5).map(c => {
+                        const cfg = getPriorityConfig(c.priority || 'Critical')
+                        return (
+                          <li key={c.id} className="flex items-center justify-between">
+                            <div>
+                              <div className="font-medium">{c.caller_name || c.caller || 'Unknown'}</div>
+                              <div className="text-xs text-gray-500">{c.category || '—'} • Score: {c.score ?? '—'}</div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="px-2 py-0.5 text-xs rounded" style={{ background: cfg.color + '20', color: cfg.color }}>{cfg.label}</div>
+                              <button onClick={()=>handleViewCall(c.id)} className="text-sm text-blue-600">View</button>
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
               </div>
             </div>
           )}

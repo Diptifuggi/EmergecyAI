@@ -35,6 +35,9 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let mounted = true
     async function restore() {
+      // If we have a refresh token persisted, try to refresh and load current user.
+      // If refresh fails, DO NOT automatically clear tokens or log the user out —
+      // the app will stay on the current page until the user explicitly logs out.
       if (tokenStore.refreshToken) {
         try {
           const res = await authApi.refreshToken(tokenStore.refreshToken)
@@ -42,8 +45,9 @@ export function AuthProvider({ children }) {
           const me = await authApi.getMe()
           if (mounted) setUser(me)
         } catch (e) {
-          tokenStore.clearTokens()
-          if (mounted) setUser(null)
+          // keep tokens as-is (they may be expired); do not clear or force logout here
+          // the app may show limited functionality until the user re-authenticates.
+          console.warn('Auth restore: refresh failed, keeping tokens until explicit logout')
         }
       }
       if (mounted) setIsLoading(false)

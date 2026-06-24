@@ -1,4 +1,5 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1"
+// Prefer an explicit VITE_API_BASE_URL if provided. If not present, use a relative path so Vite dev server proxy can forward requests.
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1'
 
 export const PRIORITY_CONFIG = {
   Critical:  { bg: "bg-red-100",    text: "text-red-800",    dot: "bg-red-600",    border: "border-l-red-600"   },

@@ -5,9 +5,34 @@ import { API_BASE_URL } from '@/lib/constants'
 export const tokenStore = {
   accessToken: null,
   refreshToken: null,
-  setTokens(access, refresh) { this.accessToken = access; this.refreshToken = refresh },
-  clearTokens() { this.accessToken = null; this.refreshToken = null },
+  setTokens(access, refresh) {
+    this.accessToken = access
+    this.refreshToken = refresh
+    try {
+      localStorage.setItem('accessToken', access || '')
+      localStorage.setItem('refreshToken', refresh || '')
+    } catch (e) {}
+  },
+  clearTokens() {
+    this.accessToken = null
+    this.refreshToken = null
+    try {
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
+    } catch (e) {}
+  },
+  initFromStorage() {
+    try {
+      const a = localStorage.getItem('accessToken') || null
+      const r = localStorage.getItem('refreshToken') || null
+      this.accessToken = a || null
+      this.refreshToken = r || null
+    } catch (e) { this.accessToken = null; this.refreshToken = null }
+  }
 }
+
+// initialize from localStorage so sessions persist across page reloads
+try { tokenStore.initFromStorage() } catch (e) {}
 
 const axiosClient = axios.create({ baseURL: API_BASE_URL })
 
@@ -42,8 +67,9 @@ axiosClient.interceptors.response.use(
       }
       orig._retry = true
       isRefreshing = true
-      try {
-        const res = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+        try {
+        // Use the axios client instance so baseURL and interceptors are applied consistently.
+        const res = await axiosClient.post('/auth/refresh', {
           refresh_token: tokenStore.refreshToken
         })
         const newToken = res.data.access_token
@@ -56,9 +82,9 @@ axiosClient.interceptors.response.use(
       } catch (e) {
         failQueue.forEach(p => p.reject(e))
         failQueue = []
-        tokenStore.clearTokens()
-        window.location.href = '/login'
-        return Promise.reject(e)
+          // DO NOT automatically redirect to /login. Clear tokens but let app decide when to log out.
+          tokenStore.clearTokens()
+          return Promise.reject(e)
       } finally { isRefreshing = false }
     }
     return Promise.reject(err)

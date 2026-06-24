@@ -21,9 +21,10 @@ def create_app() -> FastAPI:
         description="AI-Powered Emergency Dispatch Platform",
     )
 
+    # Ensure CORS gets a list of origins (settings.allowed_origins property)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.ALLOWED_ORIGINS,
+        allow_origins=settings.allowed_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

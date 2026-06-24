@@ -16,7 +16,7 @@ export default function EmergencyDetails() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Emergency #{data.id}</h1>
+      <h1 className="text-2xl font-bold mb-4">Emergency #{data?.id || '—'}</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card title="Caller Information">
           <div><strong>Name:</strong> {data.caller}</div>
@@ -31,12 +31,16 @@ export default function EmergencyDetails() {
 
         <Card title="Location Map">
           <div className="h-48">
-            <MapContainer center={[data.location.lat, data.location.lng]} zoom={13} style={{height:'100%'}}>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <Marker position={[data.location.lat, data.location.lng]}>
-                <Popup>{data.location.text}</Popup>
-              </Marker>
-            </MapContainer>
+            {data?.location && data.location.lat != null && data.location.lng != null ? (
+              <MapContainer center={[data.location.lat, data.location.lng]} zoom={13} style={{height:'100%'}}>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <Marker position={[data.location.lat, data.location.lng]}>
+                  <Popup>{data.location.text}</Popup>
+                </Marker>
+              </MapContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-sm text-gray-500">No location data available</div>
+            )}
           </div>
         </Card>
       </div>

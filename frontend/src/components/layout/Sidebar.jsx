@@ -48,21 +48,40 @@ export default function Sidebar(){
 
   const initials = (user?.full_name || 'OP').split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase()
 
-  return (
-    <aside className="flex flex-col bg-[#111111] text-white" style={{width:240, minWidth:240, borderRight: '1px solid #222222'}}>
+  // collapsed state persisted
+  const [collapsed, setCollapsed] = React.useState(() => {
+    try { return localStorage.getItem('sidebar:collapsed') === 'true' } catch { return false }
+  })
+  const [mobileOpen, setMobileOpen] = React.useState(false)
+
+  React.useEffect(()=>{
+    function onResize(){ if (window.innerWidth < 1280) setCollapsed(true) }
+    function onToggle(){ setMobileOpen(s => !s) }
+    window.addEventListener('resize', onResize)
+    window.addEventListener('toggleMobileSidebar', onToggle)
+    onResize()
+    return ()=>{ window.removeEventListener('resize', onResize); window.removeEventListener('toggleMobileSidebar', onToggle) }
+  }, [])
+
+  React.useEffect(()=>{ try { localStorage.setItem('sidebar:collapsed', collapsed ? 'true' : 'false') } catch {} }, [collapsed])
+
+  const widthStyle = collapsed ? 48 : 240
+
+  const content = (
+    <div className={`flex flex-col bg-[#111111] text-white ${collapsed ? 'text-center' : ''}`} style={{width:widthStyle, minWidth:widthStyle, borderRight: '1px solid #222222'}}>
       <div className="h-14 flex items-center px-4 border-b border-white/5">
         <div>
           <div className="text-white font-bold">EmergencyIQ</div>
-          <div className="text-sm text-white/60">Dispatch Platform</div>
+          {!collapsed && <div className="text-sm text-white/60">Dispatch Platform</div>}
         </div>
       </div>
 
       <div className="px-4 py-3 flex items-center gap-3 border-b border-white/5">
         <HealthDot healthy={healthy} />
-        <div className="text-xs">
+        {!collapsed && <div className="text-xs">
           <div className="text-[10px] text-white/60">SYSTEM</div>
           <div className={`text-[11px] ${healthy ? 'text-emerald-300' : 'text-red-400'}`}>SYSTEM LIVE</div>
-        </div>
+        </div>}
       </div>
 
       <nav className="flex-1 px-2 py-3 overflow-auto">
@@ -70,8 +89,8 @@ export default function Sidebar(){
           <NavLink key={item.to} to={item.to} className={({isActive}) =>
             `flex items-center h-10 px-3 my-1 rounded-md ${isActive ? 'text-white border-l-2 border-white pl-2 bg-white/5' : 'text-white/80 hover:bg-white/5'}`
           }>
-            <item.Icon className="w-5 h-5 mr-3" />
-            <span className="text-sm">{item.label}</span>
+            <item.Icon className="w-5 h-5 mr-3" title={item.label} />
+            {!collapsed && <span className="text-sm">{item.label}</span>}
           </NavLink>
         ))}
 
@@ -81,20 +100,34 @@ export default function Sidebar(){
           <NavLink key={item.to} to={item.to} className={({isActive}) =>
             `flex items-center h-10 px-3 my-1 rounded-md ${isActive ? 'text-white border-l-2 border-white pl-2 bg-white/5' : 'text-white/80 hover:bg-white/5'}`
           }>
-            <item.Icon className="w-5 h-5 mr-3" />
-            <span className="text-sm">{item.label}</span>
+            <item.Icon className="w-5 h-5 mr-3" title={item.label} />
+            {!collapsed && <span className="text-sm">{item.label}</span>}
           </NavLink>
         ))}
       </nav>
 
       <div className="px-3 py-4 border-t border-white/5 flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-sm font-medium">{initials}</div>
-        <div className="flex-1">
+        {!collapsed && <div className="flex-1">
           <div className="text-sm">{user?.full_name || 'Operator'}</div>
           <div className="text-xs text-white/60">{user?.role_name || 'Operator'}</div>
+        </div>}
+        <div className="flex gap-2">
+          <button onClick={()=> setCollapsed(c=>!c)} className="text-sm text-white/60">{collapsed ? '→' : '←'}</button>
+          <button onClick={handleLogout} className="text-sm text-red-400 hover:text-red-300">Log Out</button>
         </div>
-        <button onClick={handleLogout} className="text-sm text-red-400 hover:text-red-300">Log Out</button>
       </div>
-    </aside>
+    </div>
   )
+
+  if (mobileOpen) {
+    return (
+      <>
+        <div className="fixed inset-0 z-40 bg-black/40" onClick={()=>setMobileOpen(false)} />
+        <div className="fixed left-0 top-0 z-50 h-full">{content}</div>
+      </>
+    )
+  }
+
+  return content
 }

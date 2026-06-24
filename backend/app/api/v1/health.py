@@ -33,12 +33,12 @@ from app.core.config import settings
 router = APIRouter()
 
 
-@router.get("/health", status_code=status.HTTP_200_OK)
+@router.get("/", status_code=status.HTTP_200_OK)
 async def health():
     return {"status": "ok", "app": settings.APP_NAME, "environment": settings.ENVIRONMENT}
 
 
-@router.get("/health/db", status_code=status.HTTP_200_OK)
+@router.get("/db", status_code=status.HTTP_200_OK)
 async def health_db(db=Depends(get_db)):
     try:
         result = await db.execute(text("SELECT 1"))

@@ -39,3 +39,15 @@ export function getScoreColor(score){
   if (score >= 25) return '#10b981' // moderate
   return '#3b82f6' // low
 }
+
+const formatters = {
+  formatDate,
+  formatDateAgo,
+  formatUUID,
+  formatScore,
+  formatFileSize,
+  formatDuration,
+  getScoreColor,
+}
+
+export default formatters

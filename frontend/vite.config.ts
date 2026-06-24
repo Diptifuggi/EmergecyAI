@@ -20,4 +20,19 @@ export default defineConfig({
       }
     }
   }
+  ,
+  build: {
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-charts': ['chart.js', 'react-chartjs-2'],
+          'vendor-map': ['leaflet', 'react-leaflet'],
+          'vendor-ui': ['lucide-react', 'class-variance-authority', 'clsx', 'tailwind-merge']
+        }
+      }
+    }
+  }
 });

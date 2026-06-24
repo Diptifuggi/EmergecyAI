@@ -18,3 +18,4 @@ function Input({ className, type, ...props }) {
 }
 
 export { Input }
+export default Input

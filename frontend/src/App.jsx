@@ -5,11 +5,13 @@ import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import Layout from '@/components/layout/Layout'
+import ErrorBoundary from '@/components/ErrorBoundary'
 import Dashboard from '@/pages/Dashboard'
 import EmergencyCalls from '@/pages/EmergencyCalls'
 import EmergencyDetails from '@/pages/EmergencyDetails'
 import DispatchCenter from '@/pages/DispatchCenter'
-import IncidentMap from '@/pages/IncidentMap'
+import IncidentsMapPage from '@/pages/IncidentsMapPage'
+import IncidentDetailPage from '@/pages/IncidentDetailPage'
 import SOPManager from '@/pages/SOPManager'
 import Analytics from '@/pages/Analytics'
 import Login from '@/pages/LoginPage'
@@ -18,6 +20,7 @@ import NotFound from '@/pages/NotFoundPage'
 import UsersAdmin from '@/pages/admin/UsersAdmin'
 import RolesAdmin from '@/pages/admin/RolesAdmin'
 import AuditLogs from '@/pages/admin/AuditLogs'
+import NewCallDialog from '@/components/calls/NewCallDialog'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,13 +42,15 @@ function AppRoutes(){
       <Route path="/signup" element={<Register />} />
       <Route path="/login" element={<LoginWrapper />} />
 
-      <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+      <Route path="/" element={<ErrorBoundary><Layout /></ErrorBoundary>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="calls" element={<EmergencyCalls />} />
         <Route path="calls/:id" element={<EmergencyDetails />} />
-        <Route path="incidents" element={<IncidentMap />} />
-        <Route path="incidents/:id" element={<EmergencyDetails />} />
+          <Route path="incidents" element={<IncidentsMapPage />} />
+          <Route path="incidents (map)" element={<Navigate to="/incidents" replace />} />
+          <Route path="incidents/:id" element={<IncidentDetailPage />} />
+          <Route path="incidents (map)/:id" element={<Navigate to="/incidents/:id" replace />} />
         <Route path="dispatch" element={<DispatchCenter />} />
         <Route path="sop" element={<SOPManager />} />
         <Route path="analytics" element={<Analytics />} />
@@ -72,6 +77,7 @@ export default function App(){
         <BrowserRouter>
           <AppRoutes />
           <Toaster position="top-right" />
+          <NewCallDialog />
         </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>

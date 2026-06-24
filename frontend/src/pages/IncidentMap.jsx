@@ -17,7 +17,7 @@ export default function IncidentMap() {
       <div className="h-[600px]">
         <MapContainer center={[20.5937,78.9629]} zoom={5} style={{height:'100%'}}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {data?.map(call => (
+          {data?.filter(call => call?.location && call.location.lat != null && call.location.lng != null).map(call => (
             <Marker key={call.id} position={[call.location.lat, call.location.lng]}>
               <Popup>
                 <div className="font-semibold">{call.category} ({call.priority})</div>

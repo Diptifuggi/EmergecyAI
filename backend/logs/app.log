@@ -32,3 +32,59 @@ TypeError: 'Connection' object does not support the asynchronous context manager
 2026-06-23 13:48:50,259 | INFO | app.main | Audio detector backend: lightweight_fallback
 2026-06-23 13:48:50,259 | INFO | app.main | Ollama model: qwen2.5:0.5b
 2026-06-23 13:48:50,262 | INFO | app.main | Boot time: 0.171s
+2026-06-24 09:04:01,835 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 09:14:29,188 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 09:14:29,458 | INFO | app.main | Database connected successfully
+2026-06-24 09:14:29,462 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-24 09:14:29,464 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-24 09:14:29,464 | INFO | app.main | Boot time: 0.276s
+2026-06-24 09:21:36,984 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-24 09:21:40,566 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 09:21:40,702 | INFO | app.main | Database connected successfully
+2026-06-24 09:21:40,702 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-24 09:21:40,702 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-24 09:21:40,702 | INFO | app.main | Boot time: 0.133s
+2026-06-24 09:21:40,702 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-24 09:21:42,268 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 09:21:42,385 | INFO | app.main | Database connected successfully
+2026-06-24 09:21:42,385 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-24 09:21:42,385 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-24 09:21:42,389 | INFO | app.main | Boot time: 0.121s
+2026-06-24 09:22:12,431 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-24 09:22:15,045 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 09:22:15,259 | INFO | app.main | Database connected successfully
+2026-06-24 09:22:15,318 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-24 09:22:15,328 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-24 09:22:15,328 | INFO | app.main | Boot time: 0.283s
+2026-06-24 09:36:31,656 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-24 09:36:39,977 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 09:36:40,141 | INFO | app.main | Database connected successfully
+2026-06-24 09:36:40,142 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-24 09:36:40,143 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-24 09:36:40,144 | INFO | app.main | Boot time: 0.155s
+2026-06-24 09:55:43,125 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-24 09:55:46,255 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 09:55:48,762 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 09:55:49,046 | INFO | app.main | Database connected successfully
+2026-06-24 09:55:49,046 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-24 09:55:49,050 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-24 09:55:49,050 | INFO | app.main | Boot time: 0.286s
+2026-06-24 10:14:26,521 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-24 10:14:29,918 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 10:14:30,023 | INFO | app.main | Database connected successfully
+2026-06-24 10:14:30,023 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-24 10:14:30,023 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-24 10:14:30,023 | INFO | app.main | Boot time: 0.105s
+2026-06-24 10:14:49,617 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-24 10:14:51,969 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 10:14:52,114 | INFO | app.main | Database connected successfully
+2026-06-24 10:14:52,114 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-24 10:14:52,114 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-24 10:14:52,119 | INFO | app.main | Boot time: 0.151s
+2026-06-24 10:36:37,080 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-24 10:36:40,178 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-24 10:36:40,282 | INFO | app.main | Database connected successfully
+2026-06-24 10:36:40,282 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-24 10:36:40,282 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-24 10:36:40,282 | INFO | app.main | Boot time: 0.103s
+2026-06-24 14:33:36,352 | INFO | app.main | Shutting down EmergencyIQ API gracefully

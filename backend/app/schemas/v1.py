@@ -15,8 +15,30 @@ class LoginRequest(BaseModel):
 
 class UserOut(BaseModel):
     id: Optional[str]
-    username: str
+    username: Optional[str]
+    full_name: Optional[str]
+    email: Optional[EmailStr]
+    phone: Optional[str]
+    role_name: Optional[str]
+    is_active: Optional[bool]
+    created_at: Optional[str]
+
+
+class UserCreate(BaseModel):
+    full_name: str
     email: EmailStr
+    phone: Optional[str] = None
+    password: str
+    role_name: Optional[str] = 'Dispatcher'
+    is_active: Optional[bool] = True
+
+
+class UserUpdate(BaseModel):
+    full_name: Optional[str]
+    email: Optional[EmailStr]
+    phone: Optional[str]
+    role_name: Optional[str]
+    is_active: Optional[bool]
 
 
 class CallOut(BaseModel):

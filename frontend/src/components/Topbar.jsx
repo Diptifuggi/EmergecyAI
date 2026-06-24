@@ -7,7 +7,8 @@ export default function Topbar() {
 				<h2 className="text-sm font-medium">Emergency Operations</h2>
 			</div>
 			<div className="flex items-center gap-3">
-				<button className="px-3 py-1 rounded text-sm" aria-label="profile">Ops</button>
+					<button onClick={() => window.dispatchEvent(new CustomEvent('openNewCallDialog'))} className="bg-black text-white px-3 py-1 rounded text-sm">New Call</button>
+					<button className="px-3 py-1 rounded text-sm" aria-label="profile">Ops</button>
 			</div>
 		</header>
 	)
