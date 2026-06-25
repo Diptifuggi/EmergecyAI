@@ -42,7 +42,7 @@ function AppRoutes(){
       <Route path="/signup" element={<Register />} />
       <Route path="/login" element={<LoginWrapper />} />
 
-      <Route path="/" element={<ErrorBoundary><Layout /></ErrorBoundary>}>
+      <Route path="/" element={<ProtectedRoute><ErrorBoundary><Layout /></ErrorBoundary></ProtectedRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="calls" element={<EmergencyCalls />} />

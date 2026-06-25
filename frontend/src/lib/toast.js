@@ -1,4 +1,4 @@
-import { toast } from '@/components/ui/use-toast'
+import { toast } from '@/hooks/use-toast'
 
 export const toastSuccess = (msg, title = 'Success') => toast({ title, description: msg })
 export const toastError = (msg, title = 'Error') => toast({ title, description: msg, variant: 'destructive' })

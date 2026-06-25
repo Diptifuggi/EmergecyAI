@@ -1,12 +1,27 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-export default function StatusBadge({ status = 'Pending' }){
-  const s = (status || '').toLowerCase()
-  const cls = s === 'assigned' || s === 'resolved' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-700'
+const STATUS_CLASSES = {
+  Pending: { backgroundColor: "#f59e0b", color: "#0f172a" },
+  Resolved: { backgroundColor: "#10b981", color: "white" },
+  Dispatched: { backgroundColor: "#3b82f6", color: "white" },
+  Completed: { backgroundColor: "#14b8a6", color: "white" },
+  InProgress: { backgroundColor: "#8b5cf6", color: "white" },
+  Cancelled: { backgroundColor: "#ef4444", color: "white" },
+}
+
+function StatusBadge({ value, className, ...props }) {
+  const style = STATUS_CLASSES[value] || { backgroundColor: "#64748b", color: "white" }
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 text-xs rounded ${cls}`}>{status}</span>
+    <span
+      className={cn("inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold", className)}
+      style={style}
+      {...props}
+    >
+      {value}
+    </span>
   )
 }
 
-StatusBadge.propTypes = { status: PropTypes.string }
+export { StatusBadge }
+export default StatusBadge

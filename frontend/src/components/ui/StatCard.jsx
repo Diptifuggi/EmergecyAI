@@ -1,39 +1,26 @@
-import React from 'react'
-import { ArrowUp, ArrowDown, Minus } from 'lucide-react'
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-const directionIcon = (dir) => {
-  if (dir === 'up') return ArrowUp
-  if (dir === 'down') return ArrowDown
-  return Minus
-}
-
-export default function StatCard({ icon, iconBg = 'bg-gray-100', label, value, delta, deltaDirection = 'neutral' }) {
-  const DeltaIcon = directionIcon(deltaDirection)
-  const deltaColor = deltaDirection === 'up' ? 'text-green-600' : deltaDirection === 'down' ? 'text-red-600' : 'text-gray-500'
-
+function StatCard({ icon, iconBg = "bg-slate-100", label, value, delta, deltaDirection = "up", className, ...props }) {
   return (
-    <div className="w-full">
-      <div className="shadow-sm border border-gray-200 rounded-lg p-4 bg-white">
-        <div className="flex items-start justify-between">
-          <div className="text-sm text-gray-500 font-medium truncate">{label}</div>
-          <div className={`w-8 h-8 rounded-md flex items-center justify-center ${iconBg}`}>
-            {icon}
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <div className="text-3xl font-bold text-gray-900 truncate">{value}</div>
-        </div>
-
-        <div className="mt-3 flex items-center text-sm">
-          <div className={`inline-flex items-center ${deltaColor} font-medium`}> 
-            <DeltaIcon className="w-4 h-4 mr-1" />
-            <span>
-              {deltaDirection === 'up' ? '↑' : deltaDirection === 'down' ? '↓' : ''} {delta}% since last month
-            </span>
-          </div>
+    <div className={cn("rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900", className)} {...props}>
+      <div className="flex items-center justify-between gap-4">
+        <div className={cn("flex h-11 w-11 items-center justify-center rounded-2xl", iconBg)}>{icon}</div>
+        <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">{label}</div>
+      </div>
+      <div className="mt-6 flex items-end justify-between gap-4">
+        <div>
+          <div className="text-3xl font-semibold text-slate-950 dark:text-white">{value}</div>
+          {typeof delta === "number" ? (
+            <div className="text-sm text-slate-500 dark:text-slate-400">
+              {deltaDirection === "up" ? "↑" : "↓"} {Math.abs(delta)}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
   )
 }
+
+export { StatCard }
+export default StatCard

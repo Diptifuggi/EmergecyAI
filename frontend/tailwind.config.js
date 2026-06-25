@@ -5,10 +5,10 @@ import colors from 'tailwindcss/colors'
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx}",
     // include shadcn generated components if present
-    './src/components/**/*.{js,jsx,ts,tsx}',
-    './node_modules/@shadcn/**/*.{js,ts,jsx,tsx}'
+    './src/components/**/*.{js,jsx}',
+    './node_modules/@shadcn/**/*.{js,jsx}'
   ],
   theme: {
     extend: {

@@ -1,7 +1,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-const Textarea = ({ className = '', ...props }) => {
+export function Textarea({ className = '', ...props }) {
 	return (
 		<textarea
 			data-slot="textarea"
