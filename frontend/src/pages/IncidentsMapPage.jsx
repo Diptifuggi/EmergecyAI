@@ -1,6 +1,4 @@
-import React, { useMemo, useRef } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import axiosClient from '@/api/axiosClient'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
@@ -40,18 +38,128 @@ export default function IncidentsMapPage() {
   const navigate = useNavigate()
   const [selectedId, setSelectedId] = React.useState(null)
   const [selectedPos, setSelectedPos] = React.useState(null)
-  const [statusFilter, setStatusFilter] = React.useState('All')
+  const [activeTab, setActiveTab] = React.useState('All')
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['incidents'],
-    queryFn: async () => {
-      const resp = await axiosClient.get('/incidents')
-      return resp.data
+  const MOCK_INCIDENTS = [
+    {
+      id: 'INC-001',
+      title: 'Multi-vehicle collision Silvassa Main Road',
+      incident_type: 'Road Accident',
+      severity: 92,
+      priority: 'Critical',
+      priority_color: 'text-red-600',
+      status: 'Open',
+      call_count: 5,
+      latitude: 20.2766,
+      longitude: 73.0144,
+      created_at: '26 Jun 2026, 09:12',
     },
-    refetchInterval: 30000,
-  })
+    {
+      id: 'INC-002',
+      title: 'Building fire GIDC Industrial Area',
+      incident_type: 'Fire',
+      severity: 85,
+      priority: 'Very High',
+      priority_color: 'text-orange-600',
+      status: 'Assigned',
+      call_count: 8,
+      latitude: 20.3689,
+      longitude: 72.9017,
+      created_at: '26 Jun 2026, 08:47',
+    },
+    {
+      id: 'INC-003',
+      title: 'Medical emergency Vapi Hospital Road',
+      incident_type: 'Medical Emergency',
+      severity: 78,
+      priority: 'Very High',
+      priority_color: 'text-orange-600',
+      status: 'Open',
+      call_count: 3,
+      latitude: 20.3714,
+      longitude: 72.9084,
+      created_at: '26 Jun 2026, 08:31',
+    },
+    {
+      id: 'INC-004',
+      title: 'Women safety incident near railway station',
+      incident_type: 'Women Safety',
+      severity: 71,
+      priority: 'High',
+      priority_color: 'text-amber-600',
+      status: 'In Progress',
+      call_count: 2,
+      latitude: 20.6,
+      longitude: 72.93,
+      created_at: '26 Jun 2026, 08:15',
+    },
+    {
+      id: 'INC-005',
+      title: 'Flash flood NH48 underpass',
+      incident_type: 'Natural Disaster',
+      severity: 80,
+      priority: 'Very High',
+      priority_color: 'text-orange-600',
+      status: 'Open',
+      call_count: 11,
+      latitude: 20.1809,
+      longitude: 72.9631,
+      created_at: '26 Jun 2026, 07:58',
+    },
+    {
+      id: 'INC-006',
+      title: 'Child abuse report Dadra sector',
+      incident_type: 'Child Abuse',
+      severity: 68,
+      priority: 'High',
+      priority_color: 'text-amber-600',
+      status: 'Assigned',
+      call_count: 1,
+      latitude: 20.2994,
+      longitude: 72.973,
+      created_at: '26 Jun 2026, 07:32',
+    },
+    {
+      id: 'INC-007',
+      title: 'Cyber fraud complaint Vapi city',
+      incident_type: 'Cyber Crime',
+      severity: 35,
+      priority: 'Low',
+      priority_color: 'text-blue-600',
+      status: 'Resolved',
+      call_count: 1,
+      latitude: 20.3716,
+      longitude: 72.9029,
+      created_at: '26 Jun 2026, 07:10',
+    },
+    {
+      id: 'INC-008',
+      title: 'Gas cylinder explosion residential area',
+      incident_type: 'Fire',
+      severity: 88,
+      priority: 'Critical',
+      priority_color: 'text-red-600',
+      status: 'Open',
+      call_count: 6,
+      latitude: 20.27,
+      longitude: 73.02,
+      created_at: '26 Jun 2026, 06:55',
+    },
+  ]
 
-  const incidents = Array.isArray(data) ? data : []
+  // TODO: Replace with real API when backend is ready.
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ['incidents'],
+  //   queryFn: async () => {
+  //     const resp = await axiosClient.get('/incidents')
+  //     return resp.data
+  //   },
+  //   refetchInterval: 30000,
+  // })
+
+  const incidents = MOCK_INCIDENTS
+  const isLoading = false
+  const refetch = async () => {}
 
   const active = incidents.find(i => i.id === selectedId) || incidents[0] || null
 
@@ -61,13 +169,13 @@ export default function IncidentsMapPage() {
         <div className="p-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold">Incidents</h2>
-            <div className="px-2 py-1 bg-gray-200 rounded text-sm">{incidents.length}</div>
+            <div className="px-2 py-1 bg-gray-200 rounded text-sm">{MOCK_INCIDENTS.length}</div>
           </div>
 
           <div className="mb-3">
             <div className="flex space-x-2">
               {['All','Open','Assigned','Resolved'].map(s => (
-                <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 py-1 rounded ${statusFilter===s? 'bg-zinc-900 text-white' : ''}`}>{s}</button>
+                <button key={s} onClick={() => setActiveTab(s)} className={`px-3 py-1 rounded ${activeTab===s? 'bg-zinc-900 text-white' : ''}`}>{s}</button>
               ))}
             </div>
           </div>
@@ -83,21 +191,22 @@ export default function IncidentsMapPage() {
               ))
             ) : (
               incidents
-                .filter(it => (statusFilter==='All' ? true : (it.status || 'Open') === statusFilter))
+                .filter(it => (activeTab === 'All' ? true : it.status === activeTab))
                 .filter(it => it.latitude !== null && it.longitude !== null)
                 .map((inc) => {
                 const priority = inc.priority || 'Low'
-                const colorClass = priority === 'Critical' ? 'bg-red-600' : priority === 'Very High' ? 'bg-orange-600' : priority === 'High' ? 'bg-amber-500' : priority === 'Moderate' ? 'bg-green-500' : 'bg-blue-500'
+                const colorClass = priority === 'Critical' ? 'bg-red-600' : priority === 'Very High' ? 'bg-orange-500' : priority === 'High' ? 'bg-amber-500' : priority === 'Moderate' ? 'bg-green-500' : 'bg-blue-500'
                 return (
                   <div key={inc.id} onClick={() => { setSelectedId(inc.id); setSelectedPos([inc.latitude, inc.longitude]); navigate(`/incidents/${inc.id}`) }} className={`flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer ${selectedId === inc.id ? 'bg-zinc-50 border-r-2 border-r-zinc-900' : ''}`}>
                     <div style={{ width: 8, height: 32, background: colorClass }} className="mr-3 rounded-sm" />
-                    <div className="flex-1">
-                      <div className="truncate font-medium">{inc.title || 'Untitled'}</div>
-                      <div className="text-xs text-gray-500">{inc.call_count || 0} calls • {inc.updated_at ? new Date(inc.updated_at).toLocaleString() : '—'}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="truncate font-semibold text-sm">{inc.title}</div>
+                      <div className="text-xs text-zinc-500">{inc.call_count} calls • {inc.incident_type}</div>
+                      <div className="text-xs text-zinc-400">{inc.created_at}</div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm font-semibold">{inc.severity_score ?? '—'}</div>
-                      <div className="text-xs text-gray-500">{inc.priority || '—'}</div>
+                    <div className="text-right ml-3">
+                      <div className="text-lg font-bold">{inc.severity}</div>
+                      <div className={`text-xs font-medium ${inc.priority_color}`}>{inc.priority}</div>
                     </div>
                   </div>
                 )
@@ -111,16 +220,16 @@ export default function IncidentsMapPage() {
         <MapContainer center={INDIA_CENTER} zoom={5} style={{ height: '100%', width: '100%' }}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {incidents
-            .filter(it => (statusFilter==='All' ? true : (it.status || 'Open') === statusFilter))
+            .filter(it => (activeTab === 'All' ? true : it.status === activeTab))
             .filter(it => it.latitude !== null && it.longitude !== null)
             .map((inc) => (
             <Marker key={inc.id} position={[inc.latitude, inc.longitude]} icon={createPriorityMarker(inc.priority)} eventHandlers={{ click: (e) => { const map = e.target._map; map.flyTo([inc.latitude, inc.longitude], 12); setSelectedId(inc.id); setSelectedPos([inc.latitude, inc.longitude]) } }}>
               <Popup>
                 <div className="w-64">
                   <div className="font-medium truncate">{inc.title}</div>
-                  <div className="text-sm text-gray-600">{inc.category}</div>
-                  <div className="mt-2">Calls: {inc.call_count || 0}</div>
-                  <div className="mt-2">Severity: {inc.severity_score ?? '—'}</div>
+                  <div className="text-sm text-gray-600">{inc.incident_type}</div>
+                  <div className="mt-2">Calls: {inc.call_count}</div>
+                  <div className="mt-2">Severity: {inc.severity}</div>
                   <div className="mt-3"><button onClick={() => navigate(`/incidents/${inc.id}`)} className="px-3 py-1 bg-zinc-900 text-white rounded">View Incident</button></div>
                 </div>
               </Popup>

@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axiosClient from '@/api/axiosClient'
 import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import L from 'leaflet'
@@ -14,7 +14,6 @@ delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, shadowUrl: markerShadow })
 
 import { SOP_ACTIONS, DEPARTMENTS } from '@/lib/constants'
-import formatters from '@/lib/formatters'
 import {
   Card,
   CardHeader,
@@ -40,13 +39,74 @@ export default function IncidentDetailPage() {
   const [dept, setDept] = useState(DEPARTMENTS[0] || '')
   const [officer, setOfficer] = useState('')
 
-  const { data: incident, isLoading } = useQuery({
-    queryKey: ['incident', id],
-    queryFn: async () => { const resp = await axiosClient.get(`/incidents/${id}`); return resp.data },
-    enabled: !!id,
-  })
+  // TODO: Replace with real API when backend ready
+  const MOCK_INCIDENT_DETAIL = {
+    id: 'INC-001',
+    title: 'Multi-vehicle collision Silvassa Main Road',
+    incident_type: 'Road Accident',
+    severity: 92,
+    priority: 'Critical',
+    call_count: 5,
+    status: 'Open',
+    created_at: '26 Jun 2026, 09:12',
+    clustered_calls: [
+      {
+        id: 'C001', caller: 'Caller 1',
+        received: '26 Jun 2026, 09:18',
+        similarity: 0.95, similarity_width: '95%',
+        similarity_label: 'Very similar',
+        priority: 'Critical', priority_color: 'text-red-600',
+        transcript: 'Major accident on Silvassa Main Road near bus stand, three people unconscious heavy bleeding',
+      },
+      {
+        id: 'C002', caller: 'Caller 2',
+        received: '26 Jun 2026, 09:11',
+        similarity: 0.88, similarity_width: '88%',
+        similarity_label: 'Very similar',
+        priority: 'Very High', priority_color: 'text-orange-600',
+        transcript: 'Truck hit two bikes near Silvassa bus stand, people injured on road',
+      },
+      {
+        id: 'C003', caller: 'Caller 3',
+        received: '26 Jun 2026, 09:04',
+        similarity: 0.82, similarity_width: '82%',
+        similarity_label: 'Similar',
+        priority: 'High', priority_color: 'text-amber-600',
+        transcript: 'Accident Silvassa road, ambulance needed urgently, two lying on ground',
+      },
+      {
+        id: 'C004', caller: 'Caller 4',
+        received: '26 Jun 2026, 08:57',
+        similarity: 0.79, similarity_width: '79%',
+        similarity_label: 'Similar',
+        priority: 'High', priority_color: 'text-amber-600',
+        transcript: 'Road accident near main road bus stop, vehicle overturned',
+      },
+      {
+        id: 'C005', caller: 'Caller 5',
+        received: '26 Jun 2026, 08:50',
+        similarity: 0.76, similarity_width: '76%',
+        similarity_label: 'Similar',
+        priority: 'Moderate', priority_color: 'text-green-600',
+        transcript: 'Collision on Silvassa highway, traffic blocked, people on road',
+      },
+    ],
+    dispatches: [
+      { department: 'Police', officer: 'Officer Rajesh K.', time: '26 Jun 2026, 09:20', status: 'Dispatched' },
+      { department: 'Ambulance', officer: 'Unit 108-B', time: '26 Jun 2026, 09:22', status: 'En Route' },
+    ],
+    timeline: [
+      { event: 'First Call Received', time: '26 Jun 2026, 08:50' },
+      { event: 'Calls Correlated', time: '26 Jun 2026, 09:00' },
+      { event: 'Incident Created', time: '26 Jun 2026, 09:05' },
+      { event: 'Police Dispatched', time: '26 Jun 2026, 09:20' },
+      { event: 'Ambulance Dispatched', time: '26 Jun 2026, 09:22' },
+    ],
+  }
 
-  const related = useQuery({ queryKey: ['incident', id, 'calls'], queryFn: async () => { const resp = await axiosClient.get(`/incidents/${id}/calls`); return resp.data }, enabled: !!id })
+  const incident = MOCK_INCIDENT_DETAIL
+  const isLoading = false
+  const related = { data: incident.clustered_calls }
 
   const dispatchMut = useMutation({ mutationFn: async (payload) => { await axiosClient.post(`/incidents/${id}/dispatch`, payload) }, onSuccess: () => qc.invalidateQueries(['incident', id]) })
 
@@ -70,10 +130,10 @@ export default function IncidentDetailPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-xl font-semibold truncate">{incident?.title || 'Untitled'}</div>
-                      <div className="text-sm text-gray-500">{incident?.category}</div>
+                      <div className="text-sm text-gray-500">{incident?.incident_type}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold">{incident?.severity_score ?? '—'}</div>
+                      <div className="text-lg font-bold">{incident?.severity ?? '—'}</div>
                       <div className="text-sm">{incident?.priority || '—'}</div>
                     </div>
                   </div>
@@ -99,17 +159,30 @@ export default function IncidentDetailPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {(related.data || []).map((c) => (
-                      <TableRow key={c.id}>
-                        <TableCell>{c.caller_name}</TableCell>
-                        <TableCell>{formatters.formatDate(c.received_at)}</TableCell>
+                    {(related.data || []).map((call) => (
+                      <TableRow key={call.id}>
+                        <TableCell>{call.caller}</TableCell>
+                        <TableCell>{call.received}</TableCell>
                         <TableCell>
-                          <div className={`inline-block px-2 py-1 rounded ${similarityClass(c.similarity ?? 0)}`}>{(c.similarity || 0).toFixed(2)}</div>
-                          <div className="w-full bg-gray-200 h-2 mt-1"><div style={{ width: `${(c.similarity||0)*100}%` }} className="h-2 bg-zinc-900" /></div>
+                          <div>
+                            <span className="inline-block bg-zinc-800 text-white text-xs font-mono px-2 py-0.5 rounded mb-1">{call.similarity.toFixed(2)}</span>
+                            <div className="w-24 h-1.5 bg-zinc-200 rounded-full">
+                              <div className="h-1.5 bg-zinc-800 rounded-full" style={{ width: call.similarity_width }} />
+                            </div>
+                            <span className="text-xs text-zinc-400">{call.similarity_label}</span>
+                          </div>
                         </TableCell>
-                        <TableCell>{c.priority}</TableCell>
-                        <TableCell>{(c.transcript || '').slice(0,120)}{(c.transcript || '').length > 120 ? '…' : ''}</TableCell>
-                        <TableCell><Button size="sm" onClick={()=>navigate(`/calls/${c.id}`)}>View</Button></TableCell>
+                        <TableCell className={`${call.priority_color} font-medium`}>{call.priority}</TableCell>
+                        <TableCell>{call.transcript.length > 60 ? `${call.transcript.slice(0, 60)}...` : call.transcript}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigate(`/calls/${call.id}`)}
+                          >
+                            View
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -137,9 +210,9 @@ export default function IncidentDetailPage() {
             <CardContent>
               {isLoading ? <Skeleton className="h-24" /> : (
                 <div className="text-center">
-                  <div className="text-4xl font-extrabold">{formatters.formatScore(incident?.severity_score || 0)} / 100</div>
+                  <div className="text-4xl font-extrabold">{incident?.severity ?? 0} / 100</div>
                   <div className="mt-2">Priority: {incident?.priority}</div>
-                  <div className="mt-1 text-sm text-gray-500">Calls: {incident?.call_count || 0}</div>
+                  <div className="mt-1 text-sm text-gray-500">Calls: {incident?.call_count ?? 0}</div>
                 </div>
               )}
             </CardContent>
@@ -150,13 +223,16 @@ export default function IncidentDetailPage() {
             <CardContent>
               {(incident?.dispatches || []).length === 0 ? <div>No active dispatches</div> : (
                 <div>
-                  {(incident.dispatches || []).map((d) => (
-                    <div key={d.id} className="flex items-center justify-between py-2">
+                  {(incident.dispatches || []).map((d, index) => (
+                    <div key={index} className="flex items-start justify-between gap-4 py-3">
                       <div>
-                        <div className="text-sm font-medium">{d.department}</div>
-                        <div className="text-xs text-gray-500">{d.officer}</div>
+                        <div className="text-sm font-semibold">{d.department}</div>
+                        <div className="text-sm text-zinc-500">{d.officer}</div>
                       </div>
-                      <div className="text-xs text-gray-500">{formatters.formatDate(d.dispatched_at)}</div>
+                      <div className="text-right">
+                        <div className="text-xs text-zinc-400">{d.time}</div>
+                        <div className={`text-xs font-medium ${d.status === 'En Route' ? 'text-emerald-600' : 'text-zinc-500'}`}>{d.status}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -167,11 +243,12 @@ export default function IncidentDetailPage() {
           <Card>
             <CardHeader><CardTitle>Incident Timeline</CardTitle></CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                {(incident?.timeline || []).map((ev,i) => (
-                  <div key={i} className="text-sm">
-                    <div className="font-medium">{ev.title}</div>
-                    <div className="text-xs text-gray-500">{formatters.formatDate(ev.time)}</div>
+              <div className="relative pl-4 border-l-2 border-zinc-200">
+                {(incident?.timeline || []).map((ev, i) => (
+                  <div key={i} className="relative mb-6">
+                    <span className={`absolute -left-2 top-1 h-3 w-3 rounded-full ${i === 0 ? 'bg-zinc-900' : 'bg-zinc-300'}`} />
+                    <div className="font-medium text-sm">{ev.event}</div>
+                    <div className="text-xs text-zinc-400">{ev.time}</div>
                   </div>
                 ))}
               </div>

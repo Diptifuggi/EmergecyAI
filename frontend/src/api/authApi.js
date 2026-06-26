@@ -1,10 +1,20 @@
 import axiosClient, { tokenStore } from '@/api/axiosClient'
 
 // login(email, password) → POST /auth/login → returns { access_token, refresh_token, expires_in }
-export async function login(username, password) {
-  // backend expects POST /auth/ with { username, password }
-  const resp = await axiosClient.post('/auth/', { username, password })
-  return resp.data
+export async function login(email, password) {
+  // backend expects POST /auth/login with { email, password }
+  const resp = await axiosClient.post('/auth/login', { email, password })
+  const data = resp.data
+  
+  // Store tokens
+  if (data.access_token) {
+    tokenStore.setAccessToken(data.access_token)
+  }
+  if (data.refresh_token) {
+    tokenStore.setRefreshToken(data.refresh_token)
+  }
+  
+  return data
 }
 
 // logout() → POST /auth/logout → clears tokens locally
@@ -18,10 +28,20 @@ export async function logout() {
   }
 }
 
-// refreshToken(token) → POST /auth/refresh → returns { access_token }
-export async function refreshToken(token) {
-  const resp = await axiosClient.post('/auth/refresh', { refresh_token: token })
-  return resp.data
+// refreshToken(token) → POST /auth/refresh → returns { access_token, refresh_token, expires_in }
+export async function refreshToken(refreshTokenValue) {
+  const resp = await axiosClient.post('/auth/refresh', { refresh_token: refreshTokenValue })
+  const data = resp.data
+  
+  // Store new tokens
+  if (data.access_token) {
+    tokenStore.setAccessToken(data.access_token)
+  }
+  if (data.refresh_token) {
+    tokenStore.setRefreshToken(data.refresh_token)
+  }
+  
+  return data
 }
 
 // getMe() → GET /auth/me → returns user
@@ -30,11 +50,21 @@ export async function getMe() {
   return resp.data
 }
 
-// register(name, email, password) → POST /auth/register → returns created user
-export async function register(name, email, password) {
-  const resp = await axiosClient.post('/auth/register', { name, email, password })
+// register(username, email, password) → POST /auth/register → returns created user
+export async function register(username, email, password) {
+  const resp = await axiosClient.post('/auth/register', { username, email, password })
   return resp.data
 }
 
-const authApi = { login, logout, refreshToken, getMe, register }
+// changePassword(oldPassword, newPassword, confirmPassword) → POST /auth/change-password
+export async function changePassword(oldPassword, newPassword, confirmPassword) {
+  const resp = await axiosClient.post('/auth/change-password', {
+    old_password: oldPassword,
+    new_password: newPassword,
+    confirm_password: confirmPassword,
+  })
+  return resp.data
+}
+
+const authApi = { login, logout, refreshToken, getMe, register, changePassword }
 export default authApi

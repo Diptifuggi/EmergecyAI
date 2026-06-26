@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import axiosClient from '@/api/axiosClient'
-import { LayoutDashboard, Phone, MapPin, BarChart2, Users, Shield, ScrollText, Settings } from 'lucide-react'
+import { LayoutDashboard, PhoneCall, MapPin, BarChart3, Users, Shield, ScrollText, LogOut } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 
 function HealthDot({ healthy }){
@@ -14,17 +14,17 @@ function HealthDot({ healthy }){
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', Icon: LayoutDashboard },
-  { to: '/calls', label: 'Live Calls', Icon: Phone },
+  { to: '/calls', label: 'Live Calls', Icon: PhoneCall },
   { to: '/incidents', label: 'Incidents', Icon: MapPin },
-  { to: '/analytics', label: 'Analytics', Icon: BarChart2 },
+  { to: '/analytics', label: 'Analytics', Icon: BarChart3 },
 ]
 
 const ADMIN_ITEMS = [
   { to: '/admin/users', label: 'User Management', Icon: Users },
   { to: '/admin/roles', label: 'Roles', Icon: Shield },
   { to: '/admin/audit', label: 'Audit Logs', Icon: ScrollText },
-  { to: '/settings', label: 'Settings', Icon: Settings },
 ]
+
 
 export default function Sidebar(){
   const navigate = useNavigate()
@@ -76,46 +76,50 @@ export default function Sidebar(){
         </div>
       </div>
 
-      <div className="px-4 py-3 flex items-center gap-3 border-b border-white/5">
-        <HealthDot healthy={healthy} />
-        {!collapsed && <div className="text-xs">
-          <div className="text-[10px] text-white/60">SYSTEM</div>
-          <div className={`text-[11px] ${healthy ? 'text-emerald-300' : 'text-red-400'}`}>SYSTEM LIVE</div>
-        </div>}
+      <div className="px-4 py-3">
+        <div className="rounded-2xl bg-[#151515] border border-[#232323] px-3 py-3 flex items-center gap-3">
+          <HealthDot healthy={healthy} />
+          {!collapsed && <div className="space-y-0.5 text-left">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-400">SYSTEM</div>
+            <div className="text-[11px] font-semibold text-emerald-400">SYSTEM LIVE</div>
+          </div>}
+        </div>
       </div>
 
       <nav className="flex-1 px-2 py-3 overflow-auto">
         {NAV_ITEMS.map(item => (
           <NavLink key={item.to} to={item.to} className={({isActive}) =>
-            `flex items-center h-10 px-3 my-1 rounded-md ${isActive ? 'text-white border-l-2 border-white pl-2 bg-white/5' : 'text-white/80 hover:bg-white/5'}`
+            `flex items-center h-11 px-4 my-2 rounded-xl gap-3 transition-colors duration-200 ${isActive ? 'bg-[#1E1E1E] text-white border-l-2 border-white pl-3' : 'text-white/80 hover:bg-[#202020]'}`
           }>
-            <item.Icon className="w-5 h-5 mr-3" title={item.label} />
+            <item.Icon className="w-5 h-5" title={item.label} />
             {!collapsed && <span className="text-sm">{item.label}</span>}
           </NavLink>
         ))}
 
-        <div className="my-3 border-t border-white/5" />
+        <div className="my-3 border-t border-[#232323]" />
 
-        {user?.role_name === 'Admin' && ADMIN_ITEMS.map(item => (
+        {ADMIN_ITEMS.map(item => (
           <NavLink key={item.to} to={item.to} className={({isActive}) =>
-            `flex items-center h-10 px-3 my-1 rounded-md ${isActive ? 'text-white border-l-2 border-white pl-2 bg-white/5' : 'text-white/80 hover:bg-white/5'}`
+            `flex items-center h-11 px-4 my-2 rounded-xl gap-3 transition-colors duration-200 ${isActive ? 'bg-[#1E1E1E] text-white border-l-2 border-white pl-3' : 'text-white/80 hover:bg-[#202020]'}`
           }>
-            <item.Icon className="w-5 h-5 mr-3" title={item.label} />
+            <item.Icon className="w-5 h-5" title={item.label} />
             {!collapsed && <span className="text-sm">{item.label}</span>}
           </NavLink>
         ))}
       </nav>
 
-      <div className="px-3 py-4 border-t border-white/5 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-sm font-medium">{initials}</div>
-        {!collapsed && <div className="flex-1">
-          <div className="text-sm">{user?.full_name || 'Operator'}</div>
-          <div className="text-xs text-white/60">{user?.role_name || 'Operator'}</div>
-        </div>}
-        <div className="flex gap-2">
-          <button onClick={()=> setCollapsed(c=>!c)} className="text-sm text-white/60">{collapsed ? '→' : '←'}</button>
-          <button onClick={handleLogout} className="text-sm text-red-400 hover:text-red-300">Log Out</button>
-        </div>
+      <div className="px-3 py-4 border-t border-[#232323] flex items-center gap-3">
+        <div className="w-12 h-12 rounded-full bg-[#1E1E1E] flex items-center justify-center text-sm font-semibold text-white">{initials}</div>
+        {!collapsed && (
+          <div className="flex-1">
+            <div className="text-sm font-semibold text-white">{user?.full_name || 'Admin User'}</div>
+            <div className="text-xs text-zinc-400">{user?.role_name || 'Administrator'}</div>
+          </div>
+        )}
+        <button onClick={handleLogout} className="inline-flex items-center gap-2 text-sm font-medium text-red-400 hover:text-red-300 transition-colors duration-200">
+          <LogOut className="w-4 h-4" />
+          {!collapsed && <span>Log Out</span>}
+        </button>
       </div>
     </div>
   )

@@ -13,6 +13,18 @@ export const tokenStore = {
       localStorage.setItem('refreshToken', refresh || '')
     } catch (e) {}
   },
+  setAccessToken(access) {
+    this.accessToken = access
+    try {
+      localStorage.setItem('accessToken', access || '')
+    } catch (e) {}
+  },
+  setRefreshToken(refresh) {
+    this.refreshToken = refresh
+    try {
+      localStorage.setItem('refreshToken', refresh || '')
+    } catch (e) {}
+  },
   clearTokens() {
     this.accessToken = null
     this.refreshToken = null
@@ -67,13 +79,13 @@ axiosClient.interceptors.response.use(
       }
       orig._retry = true
       isRefreshing = true
-        try {
+      try {
         // Use the axios client instance so baseURL and interceptors are applied consistently.
         const res = await axiosClient.post('/auth/refresh', {
           refresh_token: tokenStore.refreshToken
         })
         const newToken = res.data.access_token
-        tokenStore.accessToken = newToken
+        tokenStore.setAccessToken(newToken)
         failQueue.forEach(p => p.resolve(newToken))
         failQueue = []
         orig.headers = orig.headers || {}
@@ -82,9 +94,9 @@ axiosClient.interceptors.response.use(
       } catch (e) {
         failQueue.forEach(p => p.reject(e))
         failQueue = []
-          // DO NOT automatically redirect to /login. Clear tokens but let app decide when to log out.
-          tokenStore.clearTokens()
-          return Promise.reject(e)
+        // DO NOT automatically redirect to /login. Clear tokens but let app decide when to log out.
+        tokenStore.clearTokens()
+        return Promise.reject(e)
       } finally { isRefreshing = false }
     }
     return Promise.reject(err)

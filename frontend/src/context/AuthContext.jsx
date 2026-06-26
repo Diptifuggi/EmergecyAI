@@ -11,16 +11,16 @@ export function AuthProvider({ children }) {
 
   const isAuthenticated = !!user
 
-  async function login(usernameOrEmail, password) {
-    const data = await authApi.login(usernameOrEmail, password)
-    // expected { access_token, refresh_token }
+  async function login(email, password) {
+    const data = await authApi.login(email, password)
+    // expected { access_token, refresh_token, expires_in }
     tokenStore.setTokens(data.access_token, data.refresh_token || null)
     let me = null
     try {
       me = await authApi.getMe()
     } catch (e) {
       // backend may not implement /auth/me; fall back to a minimal user
-      me = { username: usernameOrEmail, email: null }
+      me = { email, username: email.split('@')[0] }
     }
     setUser(me)
     return me
@@ -41,7 +41,10 @@ export function AuthProvider({ children }) {
       if (tokenStore.refreshToken) {
         try {
           const res = await authApi.refreshToken(tokenStore.refreshToken)
-          tokenStore.accessToken = res.access_token
+          tokenStore.setAccessToken(res.access_token)
+          if (res.refresh_token) {
+            tokenStore.setRefreshToken(res.refresh_token)
+          }
           const me = await authApi.getMe()
           if (mounted) setUser(me)
         } catch (e) {

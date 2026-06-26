@@ -9,6 +9,7 @@ import IncidentMap from '@/pages/IncidentsMapPage'
 import SOPManager from '@/pages/SOPManager'
 import Analytics from '@/pages/Analytics'
 import Login from '@/pages/Login'
+import Register from '@/pages/Register'
 import NotFound from '@/pages/NotFound'
 
 export default function AppRouter() {
@@ -16,6 +17,7 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/" element={<MainLayout><Dashboard /></MainLayout>} />
       <Route path="/emergencies" element={<MainLayout><EmergencyCalls /></MainLayout>} />
       <Route path="/emergencies/:id" element={<MainLayout><EmergencyDetails /></MainLayout>} />

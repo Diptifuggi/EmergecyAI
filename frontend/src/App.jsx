@@ -9,6 +9,7 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import Dashboard from '@/pages/Dashboard'
 import EmergencyCalls from '@/pages/EmergencyCalls'
 import EmergencyDetails from '@/pages/EmergencyDetails'
+import CallViewerPage from '@/pages/CallViewerPage'
 import DispatchCenter from '@/pages/DispatchCenter'
 import IncidentsMapPage from '@/pages/IncidentsMapPage'
 import IncidentDetailPage from '@/pages/IncidentDetailPage'
@@ -39,6 +40,7 @@ const queryClient = new QueryClient({
 function AppRoutes(){
   return (
     <Routes>
+      <Route path="/register" element={<Register />} />
       <Route path="/signup" element={<Register />} />
       <Route path="/login" element={<LoginWrapper />} />
 
@@ -46,7 +48,7 @@ function AppRoutes(){
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="calls" element={<EmergencyCalls />} />
-        <Route path="calls/:id" element={<EmergencyDetails />} />
+        <Route path="calls/:id" element={<CallViewerPage />} />
           <Route path="incidents" element={<IncidentsMapPage />} />
           <Route path="incidents (map)" element={<Navigate to="/incidents" replace />} />
           <Route path="incidents/:id" element={<IncidentDetailPage />} />
