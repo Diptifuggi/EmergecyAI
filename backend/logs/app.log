@@ -117,3 +117,25 @@ TypeError: 'Connection' object does not support the asynchronous context manager
 2026-06-26 09:26:48,916 | INFO | app.main | Ollama model: qwen2.5:0.5b
 2026-06-26 09:26:48,916 | INFO | app.main | Boot time: 0.114s
 2026-06-26 09:26:59,085 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-27 08:46:11,181 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-27 08:46:11,391 | INFO | app.main | Database connected successfully
+2026-06-27 08:46:11,396 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-27 08:46:11,396 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-27 08:46:11,396 | INFO | app.main | Boot time: 0.202s
+2026-06-27 10:08:11,805 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-30 15:48:03,687 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-30 15:48:04,100 | INFO | app.main | Database connected successfully
+2026-06-30 15:48:04,101 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-30 15:48:04,102 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-30 15:48:04,102 | INFO | app.main | Boot time: 0.395s
+2026-06-30 15:48:04,105 | INFO | app.main | Shutting down EmergencyIQ API gracefully
+2026-06-30 15:57:32,491 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-30 15:57:32,802 | INFO | app.main | Database connected successfully
+2026-06-30 15:57:32,803 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-30 15:57:32,804 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-30 15:57:32,804 | INFO | app.main | Boot time: 0.310s
+2026-06-30 15:58:32,490 | INFO | app.main | Starting EmergencyIQ API...
+2026-06-30 15:58:32,683 | INFO | app.main | Database connected successfully
+2026-06-30 15:58:32,683 | INFO | app.main | Audio detector backend: lightweight_fallback
+2026-06-30 15:58:32,684 | INFO | app.main | Ollama model: qwen2.5:0.5b
+2026-06-30 15:58:32,684 | INFO | app.main | Boot time: 0.179s
